@@ -26,6 +26,7 @@ const tokenExpirationMargin = time.Minute
 type Credentials struct {
 	Username string
 	Password string
+	caCertificates string
 }
 
 type Client struct {
@@ -54,6 +55,7 @@ func NewClient(baseURL, username, password, caCertificates string) (*Client, err
 		credentials: url.Values{
 			"username": []string{username},
 			"password": []string{password},
+			"caCertificates": []string{caCertificates}
 		},
 	}
 	if caCertificates != "" {
@@ -259,7 +261,7 @@ func (c *Client) authenticate() error {
 	}
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
-		"username": c.credentials.Get("username"),
+		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
@@ -291,7 +293,7 @@ func (c *Client) authenticate() error {
 
 		log.WithFields(log.Fields{
 			"url":             c.baseURL,
-			"username":        c.credentials.Get("username"),
+			"caCertificates":        c.credentials.Get("caCertificates"),
 			"tokenExpiration": time.Unix(c.tokenExpirationTimestamp, 0).String(),
 		}).Info("Authentication successful.")
 		return nil

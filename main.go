@@ -27,9 +27,9 @@ type Configuration struct {
 	} `yaml:"exporter" validate:"required"`
 	Nodes []struct {
 		URL            string            `yaml:"url" validate:"required,url"`
-		CACertificates string            `yaml:"caCertificates"`
-		Username       string            `yaml:"username" validate:"required"`
-		Password       string            `yaml:"password" validate:"required"`
+		CACertificates string            `yaml:"caCertificates" validate:"required"`
+		Username       string            `yaml:"username"`
+		Password       string            `yaml:"password"`
 		Labels         map[string]string `yaml:"labels"`
 	} `yaml:"nodes" validate:"required,dive"`
 }
@@ -106,7 +106,7 @@ func start(config *Configuration) error {
 		log.WithFields(log.Fields{
 			"labels":   node.Labels,
 			"url":      node.URL,
-			"username": node.Username,
+			"caCertificates": node.caCertificates,
 		}).Info("Registering NiFi node...")
 		if err := prometheus.DefaultRegisterer.Register(collectors.NewDiagnosticsCollector(api, node.Labels)); err != nil {
 			return errors.Annotate(err, "Couldn't register system diagnostics collector.")
