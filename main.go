@@ -27,7 +27,7 @@ type Configuration struct {
 	} `yaml:"exporter" validate:"required"`
 	Nodes []struct {
 		URL            string            `yaml:"url" validate:"required,url"`
-		caCertificates string            `yaml:"caCertificates" validate:"required"`
+		CaCertificates string            `yaml:"caCertificates" validate:"required"`
 		Username       string            `yaml:"username"`
 		Password       string            `yaml:"password"`
 		Labels         map[string]string `yaml:"labels"`
@@ -99,14 +99,14 @@ func loadConfig(configPath string) (*Configuration, error) {
 func start(config *Configuration) error {
 	for i := range config.Nodes {
 		node := &config.Nodes[i]
-		api, err := client.NewClient(node.URL, node.Username, node.Password, node.caCertificates)
+		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
 		if err != nil {
 			return errors.Annotate(err, "Couldn't create Prometheus API client")
 		}
 		log.WithFields(log.Fields{
 			"labels":   node.Labels,
 			"url":      node.URL,
-			"caCertificates": node.caCertificates,
+			"caCertificates": node.CaCertificates,
 		}).Info("Registering NiFi node...")
 		if err := prometheus.DefaultRegisterer.Register(collectors.NewDiagnosticsCollector(api, node.Labels)); err != nil {
 			return errors.Annotate(err, "Couldn't register system diagnostics collector.")

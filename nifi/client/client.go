@@ -26,7 +26,7 @@ const tokenExpirationMargin = time.Minute
 type Credentials struct {
 	Username string
 	Password string
-	caCertificates string
+	CaCertificates string
 }
 
 type Client struct {
