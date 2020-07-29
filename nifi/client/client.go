@@ -26,7 +26,9 @@ const tokenExpirationMargin = time.Minute
 type Credentials struct {
 	Username string
 	Password string
-	CaCertificates string
+//	CaCertificates string
+	IPACerts string
+	CVRootCA string
 }
 
 type Client struct {
@@ -49,18 +51,21 @@ type jwtPayload struct {
 	Subject           string `json:"sub"`
 }
 
-func NewClient(baseURL, username, password, caCertificates string) (*Client, error) {
+//func NewClient(baseURL, username, password, caCertificates string) (*Client, error) {
+func NewClient(baseURL, username, password, ipaCerts, cvRootCA string) (*Client, error) {
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
 			"username": []string{username},
 			"password": []string{password},
-			"caCertificates": []string{caCertificates}
+//			"caCertificates": []string{caCertificates},
+			"ipaCerts": []string{ipaCerts},
+			"cvRootCA": []string{cvRootCA}
 		},
 	}
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
-		if ok := certPool.AppendCertsFromPEM([]byte(caCertificates)); !ok {
+		if ok := certPool.AppendCertsFromPEM([]byte(ipaCerts)); !ok {
 			return nil, errors.New("Invalid CA certificates.")
 		}
 		for _, der := range certPool.Subjects() {
@@ -261,7 +266,9 @@ func (c *Client) authenticate() error {
 	}
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
+//		"caCertificates": c.credentials.Get("caCertificates"),
+		"ipaCerts": c.credentials.Get("ipaCerts"),
+		"cvRootCA": c.credentials.Get("cvRootCA"),
 	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
@@ -293,7 +300,9 @@ func (c *Client) authenticate() error {
 
 		log.WithFields(log.Fields{
 			"url":             c.baseURL,
-			"caCertificates":        c.credentials.Get("caCertificates"),
+//			"caCertificates":        c.credentials.Get("caCertificates"),
+			"ipaCerts":        c.credentials.Get("ipaCerts"),
+			"cvRootCA":        c.credentials.Get("cvRootCA"),
 			"tokenExpiration": time.Unix(c.tokenExpirationTimestamp, 0).String(),
 		}).Info("Authentication successful.")
 		return nil
