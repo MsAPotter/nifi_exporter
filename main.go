@@ -102,7 +102,7 @@ func start(config *Configuration) error {
 	for i := range config.Nodes {
 		node := &config.Nodes[i]
 //		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
-		api, err := client.NewClient(node.URL, node.IPACerts, node.CVRootCA, node.Labels)
+		api, err := client.NewClient(node.URL, node.IPACerts, node.CVRootCA)
 		if err != nil {
 			return errors.Annotate(err, "Couldn't create Prometheus API client")
 		}
