@@ -53,8 +53,6 @@ func NewClient(baseURL, username, password, caCertificates string) (*Client, err
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
-			"username": []string{username},
-			"password": []string{password},
 			"caCertificates": []string{caCertificates}
 		},
 	}
