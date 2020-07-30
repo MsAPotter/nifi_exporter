@@ -27,7 +27,7 @@ type Configuration struct {
 	} `yaml:"exporter" validate:"required"`
 	Nodes []struct {
 		URL            string            `yaml:"url" validate:"required,url"`
-		CaCertificates string            `yaml:"caCertificates" validate:"required"`
+		CaCertificates string            `yaml:"caCertificates" validate:"required,caCertificates"`
 		Username       string            `yaml:"username"`
 		Password       string            `yaml:"password"`
 		Labels         map[string]string `yaml:"labels"`
