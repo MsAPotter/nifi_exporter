@@ -76,6 +76,7 @@ func NewClient(baseURL, username, password, caCertificates string) (*Client, err
 		c.client.Transport = &http.Transport{
 			TLSClientConfig: &tls.Config{
 				RootCAs: certPool,
++				Certificates: []tls.Certificate{cert},
 			},
 		}
 	}
