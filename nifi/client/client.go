@@ -24,8 +24,6 @@ import (
 const tokenExpirationMargin = time.Minute
 
 type Credentials struct {
-//	Username string
-//	Password string
 	CaCertificates string
 }
 
