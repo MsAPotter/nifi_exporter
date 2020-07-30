@@ -61,7 +61,7 @@ func loadConfig(configPath string) (*Configuration, error) {
 		return nil, errors.Annotate(err, "Couldn't read config file")
 	}
 
-	var config Configurationreauthenticating
+	var config Configuration
 	if err := yaml.Unmarshal(configYaml, &config); err != nil {
 		return nil, errors.Annotate(err, "Couldn't parse config file")
 	}
