@@ -24,11 +24,9 @@ import (
 const tokenExpirationMargin = time.Minute
 
 type Credentials struct {
-	Username string
-	Password string
-//	CaCertificates string
-	IPACerts string
-	CVRootCA string
+//	Username string
+//	Password string
+	CaCertificates string
 }
 
 type Client struct {
@@ -51,21 +49,18 @@ type jwtPayload struct {
 	Subject           string `json:"sub"`
 }
 
-//func NewClient(baseURL, username, password, caCertificates string) (*Client, error) {
-func NewClient(baseURL, username, password, ipaCerts, cvRootCA string) (*Client, error) {
+func NewClient(baseURL, username, password, caCertificates string) (*Client, error) {
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
 			"username": []string{username},
 			"password": []string{password},
-//			"caCertificates": []string{caCertificates},
-			"ipaCerts": []string{ipaCerts},
-			"cvRootCA": []string{cvRootCA}
+			"caCertificates": []string{caCertificates}
 		},
 	}
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
-		if ok := certPool.AppendCertsFromPEM([]byte(ipaCerts)); !ok {
+		if ok := certPool.AppendCertsFromPEM([]byte(caCertificates)); !ok {
 			return nil, errors.New("Invalid CA certificates.")
 		}
 		for _, der := range certPool.Subjects() {
@@ -264,12 +259,10 @@ func (c *Client) authenticate() error {
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
 		return nil
 	}
-	log.WithFields(log.Fields{
-		"url":      c.baseURL,
-//		"caCertificates": c.credentials.Get("caCertificates"),
-		"ipaCerts": c.credentials.Get("ipaCerts"),
-		"cvRootCA": c.credentials.Get("cvRootCA"),
-	}).Info("Authentication token has expired, reauthenticating...")
+//	log.WithFields(log.Fields{
+//		"url":      c.baseURL,
+//		"caCertificates": c.credentials.Get("caCertificates")
+//	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
 	if err != nil {
@@ -300,9 +293,7 @@ func (c *Client) authenticate() error {
 
 		log.WithFields(log.Fields{
 			"url":             c.baseURL,
-//			"caCertificates":        c.credentials.Get("caCertificates"),
-			"ipaCerts":        c.credentials.Get("ipaCerts"),
-			"cvRootCA":        c.credentials.Get("cvRootCA"),
+			"caCertificates":        c.credentials.Get("caCertificates")
 			"tokenExpiration": time.Unix(c.tokenExpirationTimestamp, 0).String(),
 		}).Info("Authentication successful.")
 		return nil
