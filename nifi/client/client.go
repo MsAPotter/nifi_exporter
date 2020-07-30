@@ -49,7 +49,7 @@ type jwtPayload struct {
 	Subject           string `json:"sub"`
 }
 
-func NewClient(baseURL, username, password, caCertificates string) (*Client, error) {
+func NewClient(baseURL, caCertificates string) (*Client, error) {
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
@@ -76,7 +76,6 @@ func NewClient(baseURL, username, password, caCertificates string) (*Client, err
 		c.client.Transport = &http.Transport{
 			TLSClientConfig: &tls.Config{
 				RootCAs: certPool,
-+				Certificates: []tls.Certificate{cert},
 			},
 		}
 	}
