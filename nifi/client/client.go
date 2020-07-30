@@ -259,10 +259,10 @@ func (c *Client) authenticate() error {
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
 		return nil
 	}
-//	log.WithFields(log.Fields{
-//		"url":      c.baseURL,
-//		"caCertificates": c.credentials.Get("caCertificates")
-//	}).Info("Authentication token has expired, reauthenticating...")
+	log.WithFields(log.Fields{
+		"url":      c.baseURL,
+		"caCertificates": c.credentials.Get("caCertificates")
+	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
 	if err != nil {
@@ -303,3 +303,21 @@ func (c *Client) authenticate() error {
 		return errors.New(body)
 	}
 }
+
+func (c *ProcessGroupsCollector) collect(ch chan<- prometheus.Metric, entity *client.ProcessGroupEntity) {
+	
+	errorCount := map[string]int{}
+	for i := range entity.Bulletins {
+		errorCount[entity.Bulletins[i].Bulletin.Message]++
+	}
+
+	for message, count := range errorCount {
+		ch <- prometheus.MustNewConstMetric(
+			c.bulletin5mCount,
+			prometheus.GaugeValue,
+			float64(count),
+			entity.Component.Name,
+			message,
+			entity.Component.ID,
+		)
+	}
