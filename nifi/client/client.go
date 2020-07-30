@@ -25,6 +25,7 @@ const tokenExpirationMargin = time.Minute
 
 type Credentials struct {
 	CaCertificates string
+	IpaCerts string
 }
 
 type Client struct {
@@ -47,11 +48,12 @@ type jwtPayload struct {
 	Subject           string `json:"sub"`
 }
 
-func NewClient(baseURL, caCertificates string) (*Client, error) {
+func NewClient(baseURL, caCertificates, ipaCerts string) (*Client, error) {
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
 			"caCertificates": []string{caCertificates}
+			"ipaCerts": []string{ipaCerts}
 		},
 	}
 	if caCertificates != "" {
@@ -257,7 +259,8 @@ func (c *Client) authenticate() error {
 	}
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates")
+		"caCertificates": c.credentials.Get("caCertificates"),
+		"ipaCerts": c.credentials.Get("ipaCerts")
 	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
@@ -290,6 +293,7 @@ func (c *Client) authenticate() error {
 		log.WithFields(log.Fields{
 			"url":             c.baseURL,
 			"caCertificates":        c.credentials.Get("caCertificates")
+			"ipaCerts":        c.credentials.Get("ipaCerts")
 			"tokenExpiration": time.Unix(c.tokenExpirationTimestamp, 0).String(),
 		}).Info("Authentication successful.")
 		return nil
