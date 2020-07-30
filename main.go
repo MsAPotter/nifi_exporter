@@ -106,7 +106,7 @@ func start(config *Configuration) error {
 		log.WithFields(log.Fields{
 			"labels":   node.Labels,
 			"url":      node.URL,
-			"caCertificates": node.CaCertificates
+			"caCertificates": node.CaCertificates,
 		}).Info("Registering NiFi node...")
 		if err := prometheus.DefaultRegisterer.Register(collectors.NewDiagnosticsCollector(api, node.Labels)); err != nil {
 			return errors.Annotate(err, "Couldn't register system diagnostics collector.")
