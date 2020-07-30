@@ -28,8 +28,8 @@ type Configuration struct {
 	Nodes []struct {
 		URL            string            `yaml:"url" validate:"required,url"`
 		CaCertificates string            `yaml:"caCertificates" validate:"required"`
-//		Username       string            `yaml:"username"`
-//		Password       string            `yaml:"password"`
+		Username       string            `yaml:"username"`
+		Password       string            `yaml:"password"`
 //		IPACerts       string            `yaml:"ipaCerts" validate:"required"`
 //		CVRootCA       string            `yaml:"cvRootCA" validate:"required"`
 		Labels         map[string]string `yaml:"labels"`
@@ -101,8 +101,8 @@ func loadConfig(configPath string) (*Configuration, error) {
 func start(config *Configuration) error {
 	for i := range config.Nodes {
 		node := &config.Nodes[i]
-//		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
-		api, err := client.NewClient(node.URL, node.CaCertificates)
+		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
+//		api, err := client.NewClient(node.URL, node.CaCertificates)
 		if err != nil {
 			return errors.Annotate(err, "Couldn't create Prometheus API client")
 		}

@@ -260,10 +260,10 @@ func (c *Client) authenticate() error {
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
 		return nil
 	}
-	log.WithFields(log.Fields{
-		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
-	}).Info("Authentication token has expired, reauthenticating...")
+//	log.WithFields(log.Fields{
+//		"url":      c.baseURL,
+//		"caCertificates": c.credentials.Get("caCertificates"),
+//	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
 	if err != nil {
