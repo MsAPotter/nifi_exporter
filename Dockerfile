@@ -8,6 +8,9 @@
 # ENTRYPOINT ["/nifi_exporter"]
 # CMD ["/config/config.yml"]
 
+
+
+######################################################################################
 # Two-stage build:
 #    first  FROM prepares a binary file in full environment ~780MB
 #    second FROM takes only binary file ~10MB
@@ -27,17 +30,6 @@ RUN set -x && \
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -o /nifi_exporter
 
-CMD ["/nifi_exporter"]
-
-EXPOSE 8000
-
-
-
-#########
-# second stage to obtain a very small image
-FROM scratch
-
-COPY --from=builder /nifi_exporter .
 
 EXPOSE 8000
 
