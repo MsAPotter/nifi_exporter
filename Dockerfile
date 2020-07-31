@@ -11,6 +11,8 @@
 
 
 ######################################################################################
+###### https://stackoverflow.com/questions/47837149/build-docker-with-go-app-cannot-find-package
+######################################################################################
 # Two-stage build:
 #    first  FROM prepares a binary file in full environment ~780MB
 #    second FROM takes only binary file ~10MB
@@ -36,4 +38,17 @@ EXPOSE 8000
 ENTRYPOINT ["/nifi_exporter"]
 CMD ["/config/config.yml"]
 
+
+
+#########
+# second stage to obtain a very small image
+
+# FROM scratch
+
+# COPY --from=builder /your-app .
+
+#EXPOSE 8000
+
+# ENTRYPOINT ["/nifi_exporter"]
+# CMD ["/config/config.yml"]
 

@@ -19,8 +19,6 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 	validator_en "gopkg.in/go-playground/validator.v9/translations/en"
 	"gopkg.in/yaml.v2"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type Configuration struct {
