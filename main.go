@@ -95,8 +95,8 @@ func loadConfig(configPath string) (*Configuration, error) {
 }
 
 func start(config *Configuration) error {
-	for i := range config.Nodes {
-		node := &config.Nodes[i]
+//	for i := range config.Nodes {
+//		node := &config.Nodes[i]
 //		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
 		api, err := client.NewClient{node.URL: sql.NullString{String: "", Valid: true}, node.CaCertificates: sql.NullString{String: "", Valid: true}}
 		if err != nil {
