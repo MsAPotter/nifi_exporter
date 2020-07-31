@@ -265,6 +265,7 @@ func (c *Client) authenticate() error {
 		return errors.Annotate(err, "Couldn't request access token from NiFi")
 	}
 	defer resp.Body.Close()
+	log.Println(resp.Body)
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Annotate(err, "Couldn't read access token response from NiFi")

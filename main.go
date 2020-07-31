@@ -28,6 +28,8 @@ type Configuration struct {
 	Nodes []struct {
 		URL            string            `yaml:"url" validate:"required,url"`
 		CaCertificates string            `yaml:"caCertificates" validate:"required"`
+		Username       string            `yaml:"username"`
+		Password       string            `yaml:"password"`
 		Labels         map[string]string `yaml:"labels"`
 	} `yaml:"nodes" validate:"required,dive"`
 }
@@ -95,10 +97,9 @@ func loadConfig(configPath string) (*Configuration, error) {
 }
 
 func start(config *Configuration) error {
-//	for i := range config.Nodes {
-//		node := &config.Nodes[i]
-//		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
-		api, err := client.NewClient{node.URL: sql.NullString{String: "", Valid: true}, node.CaCertificates: sql.NullString{String: "", Valid: true}}
+	for i := range config.Nodes {
+		node := &config.Nodes[i]
+		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
 		if err != nil {
 			return errors.Annotate(err, "Couldn't create Prometheus API client")
 		}
@@ -119,7 +120,7 @@ func start(config *Configuration) error {
 		if err := prometheus.DefaultRegisterer.Register(collectors.NewConnectionsCollector(api, node.Labels)); err != nil {
 			return errors.Annotate(err, "Couldn't register connections collector.")
 		}
-//	}
+	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`<html>
