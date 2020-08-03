@@ -54,9 +54,12 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 			"caCertificates": []string{caCertificates}
 		},
 	}
+	fmt.Printf(c)
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
 		if ok := certPool.AppendCertsFromPEM([]byte(caCertificates)); !ok {
+			fmt.Printf("not ok")
+			fmt.Println("not ok2")
 			return nil, errors.New("Invalid CA certificates.")
 		}
 		for _, der := range certPool.Subjects() {
@@ -77,6 +80,8 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 			},
 		}
 	}
+	fmt.Printf("exiting new client function")
+	fmt.Println("exiting new client function 2")
 	return &c, nil
 }
 
@@ -240,6 +245,20 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 		return errors.New(message)
 	}
 
+}
+
+
+
+func wrapHandlerWithLogging(wrappedHandler http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+        log.Printf("--> %s %s", req.Method, req.URL.Path)
+
+        lrw := NewLoggingResponseWriter(w)
+        wrappedHandler.ServeHTTP(lrw, req)
+
+        statusCode := lrw.statusCode
+        log.Printf("<-- %d %s", statusCode, http.StatusText(statusCode))
+    })
 }
 
 func (c *Client) getToken() (string, error) {
