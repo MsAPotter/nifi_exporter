@@ -298,11 +298,13 @@ func (c *Client) authenticate() error {
 	log.Printf("log.printf = %v\n", feedback)
 	fmt.out.printf("fmt.out.printf = %v\n", feedback)
 	log.WithFields(log.Fields{
-		"url":      c.baseURL
-	}).Infof("Printing reponse body %v: %s", feedback, c.baseURL)
+		"url":      c.baseURL,
+		"caCertificates": c.credentials.Get("caCertificates")
+	}).Infof("Printing reponse body %v: %s, %s", feedback, c.baseURL)
 
 	log.WithFields(log.Fields{
-		"url":      c.baseURL
+		"url":      c.baseURL,
+		"caCertificates": c.credentials.Get("caCertificates")
 	}).Infof("Printing client c %v: %s", c, c.baseURL)
 
 
