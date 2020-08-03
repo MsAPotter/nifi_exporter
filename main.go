@@ -99,13 +99,10 @@ func loadConfig(configPath string) (*Configuration, error) {
 
 func start(config *Configuration) error {
 
-	feedback := resp.Body
 	fmt.Print("inside star function fmt.print")
 	fmt.Println("inside star function fmt.println")
 	fmt.Printf("hello = %v\n", feedback)
 	log.Printf("halo = %v\n", feedback)
-	fmt.out.printf("inside star function fmt.out.printf")
-	fmt.printf("inside star function fmt.printf")
 	log.Info("inside star function log.info")
 
 	for i := range config.Nodes {
