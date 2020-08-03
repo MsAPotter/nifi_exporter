@@ -291,13 +291,15 @@ func (c *Client) authenticate() error {
 		"url":      c.baseURL,
 		"caCertificates": c.credentials.Get("caCertificates")
 	}).Info("Authentication token has expired, reauthenticating...")
-	feedback := resp.Body
-	fmt.Print("inside authenticate function")
-	fmt.Println("inside authenticate function2")
-	fmt.Printf("hello = %v\n", feedback)
-	log.Printf("halo = %v\n", feedback)
-	fmt.out.printf("Creating new client3")
-	fmt.printf("Creating new client4")
+
+	var feedback := resp.Body
+	fmt.Printf("fmt.printf = %v\n", feedback)
+	fmt.Println("fmt.println = %v\n", feedback)
+	log.Printf("log.printf = %v\n", feedback)
+	fmt.out.printf("fmt.out.printf = %v\n", feedback)
+	log.WithFields(log.Fields{
+		"commonName":   name.CommonName
+	}).Infof("Loaded CA certificate for %v: %s", feedback, name.CommonName)
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
 	if err != nil {
