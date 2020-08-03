@@ -298,8 +298,13 @@ func (c *Client) authenticate() error {
 	log.Printf("log.printf = %v\n", feedback)
 	fmt.out.printf("fmt.out.printf = %v\n", feedback)
 	log.WithFields(log.Fields{
-		"commonName":   name.CommonName
-	}).Infof("Loaded CA certificate for %v: %s", feedback, name.CommonName)
+		"url":      c.baseURL
+	}).Infof("Printing reponse body %v: %s", feedback, c.baseURL)
+
+	log.WithFields(log.Fields{
+		"url":      c.baseURL
+	}).Infof("Printing client c %v: %s", c, c.baseURL)
+
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
 	if err != nil {
