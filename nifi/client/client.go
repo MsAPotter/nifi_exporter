@@ -223,7 +223,7 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 		return errors.Annotate(err, "NiFi API request failed")
 	}
 	defer resp.Body.Close()
-	feedback fmt.Sprintf(
+	feedback := fmt.Sprintf(
 		"Response body: %s: %s",
 		resp.Body,
 		string(messageBytes),
