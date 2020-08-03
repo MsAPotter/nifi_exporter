@@ -54,6 +54,8 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 			"caCertificates": []string{caCertificates}
 		},
 	}
+	fmt.Print("Creating new client")
+	fmt.Println("Creating new client2")
 	fmt.Printf("print new client fmt = %v\n", c)
 	log.Printf("print new client log = %v\n", c)
 	if caCertificates != "" {
@@ -219,6 +221,8 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 	}
 	defer resp.Body.Close()
 	feedback := resp.Body
+	fmt.Print("inside request function")
+	fmt.Println("inside request function2")
 	fmt.Printf("hello = %v\n", feedback)
 	log.Printf("halo = %v\n", feedback)
 
@@ -279,6 +283,8 @@ func (c *Client) authenticate() error {
 		"caCertificates": c.credentials.Get("caCertificates")
 	}).Info("Authentication token has expired, reauthenticating...")
 	feedback := resp.Body
+	fmt.Print("inside authenticate function")
+	fmt.Println("inside authenticate function2")
 	fmt.Printf("hello = %v\n", feedback)
 	log.Printf("halo = %v\n", feedback)
 
