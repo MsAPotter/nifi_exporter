@@ -54,7 +54,8 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 			"caCertificates": []string{caCertificates}
 		},
 	}
-	fmt.Printf(c)
+	fmt.Printf("print new client fmt = %v\n", c)
+	log.Printf("print new client log = %v\n", c)
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
 		if ok := certPool.AppendCertsFromPEM([]byte(caCertificates)); !ok {
