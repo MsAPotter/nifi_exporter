@@ -58,8 +58,8 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
 		if ok := certPool.AppendCertsFromPEM([]byte(caCertificates)); !ok {
-			fmt.Printf("not ok")
-			fmt.Println("not ok2")
+			log.Infof("not ok")
+			log.Infof("not ok2")
 			return nil, errors.New("Invalid CA certificates.")
 		}
 		for _, der := range certPool.Subjects() {
@@ -80,8 +80,7 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 			},
 		}
 	}
-	fmt.Printf("exiting new client function")
-	fmt.Println("exiting new client function 2")
+	log.Infof("exiting new client function")
 	return &c, nil
 }
 
