@@ -42,6 +42,7 @@ func main() {
 	configPath := os.Args[1]
 
 	log.Info("Starting nifi_exporter...")
+	log.Info("Testing...")
 
 	config, err := loadConfig(configPath)
 	if err != nil {
