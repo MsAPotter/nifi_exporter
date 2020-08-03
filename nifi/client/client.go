@@ -58,8 +58,7 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
 		if ok := certPool.AppendCertsFromPEM([]byte(caCertificates)); !ok {
-			log.Infof("not ok")
-			log.Infof("not ok2")
+			log.Info("Inside new client function -- not ok")
 			return nil, errors.New("Invalid CA certificates.")
 		}
 		for _, der := range certPool.Subjects() {
@@ -80,11 +79,12 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 			},
 		}
 	}
-	log.Infof("exiting new client function")
+	log.Info("exiting new client function")
 	return &c, nil
 }
 
 func (c *Client) GetCounters(nodewise bool, clusterNodeId string) (*CountersDTO, error) {
+	log.Info("inside getCounters function")
 	query := url.Values{}
 	if nodewise {
 		query.Add("nodewise", "1")
@@ -103,6 +103,7 @@ func (c *Client) GetCounters(nodewise bool, clusterNodeId string) (*CountersDTO,
 }
 
 func (c *Client) GetProcessGroup(id string) (*ProcessGroupEntity, error) {
+	log.Info("inside GetProcessGroup function")
 	var entity ProcessGroupEntity
 	if err := c.request("/process-groups/"+id, nil, &entity); err != nil {
 		return nil, errors.Trace(err)
@@ -198,6 +199,7 @@ func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*Sys
 }
 
 func (c *Client) request(path string, query url.Values, responseEntity interface{}) error {
+	log.Info("inside request function")
 	token, err := c.getToken()
 	if err != nil {
 		return errors.Trace(err)
@@ -220,8 +222,11 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 		return errors.Annotate(err, "NiFi API request failed")
 	}
 	defer resp.Body.Close()
+	log.Infof(resp.StatusCode)
+	log.Info(resp.StatusCode)
 
 	if resp.StatusCode == http.StatusOK {
+	log.Info("inside StatusCode if stmt")
 		if err := json.NewDecoder(resp.Body).Decode(responseEntity); err != nil {
 			return errors.Annotate(err, "Invalid JSON response from NiFi")
 		}
@@ -249,6 +254,7 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 
 
 func wrapHandlerWithLogging(wrappedHandler http.Handler) http.Handler {
+	log.Info("inside wrapHandlerWithLogging function")
     return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
         log.Printf("--> %s %s", req.Method, req.URL.Path)
 
@@ -268,6 +274,7 @@ func (c *Client) getToken() (string, error) {
 }
 
 func (c *Client) authenticate() error {
+	log.Info("inside authenticate function")
 	c.tokenMx.Lock()
 	defer c.tokenMx.Unlock()
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
