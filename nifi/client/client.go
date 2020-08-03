@@ -48,7 +48,7 @@ type jwtPayload struct {
 }
 
 func NewClient(baseURL, caCertificates string) (*Client, error) {
-	c := Client{
+	var c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
 			"caCertificates": []string{caCertificates}
@@ -58,6 +58,9 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 	fmt.Println("Creating new client2")
 	fmt.Printf("print new client fmt = %v\n", c)
 	log.Printf("print new client log = %v\n", c)
+	fmt.out.printf("Creating new client3")
+	fmt.printf("Creating new client4")
+	
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
 		if ok := certPool.AppendCertsFromPEM([]byte(caCertificates)); !ok {
@@ -220,11 +223,17 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 		return errors.Annotate(err, "NiFi API request failed")
 	}
 	defer resp.Body.Close()
-	feedback := resp.Body
+	feedback fmt.Sprintf(
+		"Response body: %s: %s",
+		resp.Body,
+		string(messageBytes),
+	)
 	fmt.Print("inside request function")
 	fmt.Println("inside request function2")
 	fmt.Printf("hello = %v\n", feedback)
 	log.Printf("halo = %v\n", feedback)
+	fmt.out.printf("Creating new client3")
+	fmt.printf("Creating new client4")
 
 	if resp.StatusCode == http.StatusOK {
 		if err := json.NewDecoder(resp.Body).Decode(responseEntity); err != nil {
@@ -287,6 +296,8 @@ func (c *Client) authenticate() error {
 	fmt.Println("inside authenticate function2")
 	fmt.Printf("hello = %v\n", feedback)
 	log.Printf("halo = %v\n", feedback)
+	fmt.out.printf("Creating new client3")
+	fmt.printf("Creating new client4")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
 	if err != nil {
