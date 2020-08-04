@@ -289,23 +289,23 @@ func (c *Client) authenticate() error {
 	}
 	defer resp.Body.Close()
 
-	log.Info("Printing resp.....")	/////
-	log.Info(resp)	//////
-	log.Info("Printing respBody.....")	/////
-	log.Info(resp.Body)	//////
+	// log.Info("Printing resp.....")	/////
+	// log.Info(resp)	//////
+	// log.Info("Printing respBody.....")	/////
+	// log.Info(resp.Body)	//////
 
 
-	log.Info("Printing resp with url and certs.....")	/////
-	log.WithFields(log.Fields{	///////
-		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
-	}).Info(resp)
+	// log.Info("Printing resp with url and certs.....")	/////
+	// log.WithFields(log.Fields{	///////
+	// 	"url":      c.baseURL,
+	// 	"caCertificates": c.credentials.Get("caCertificates"),
+	// }).Info(resp)
 
-	log.Info("Printing respBody with url and certs.....")	/////
-	log.WithFields(log.Fields{	///////
-		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
-	}).Info(resp.Body)
+	// log.Info("Printing respBody with url and certs.....")	/////
+	// log.WithFields(log.Fields{	///////
+	// 	"url":      c.baseURL,
+	// 	"caCertificates": c.credentials.Get("caCertificates"),
+	// }).Info(resp.Body)
 
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
@@ -314,15 +314,15 @@ func (c *Client) authenticate() error {
 	}
 	body := strings.TrimSpace(string(bodyBytes))
 
-	log.Info("Printing body.....")	/////
-	log.Info(body)	//////
+	// log.Info("Printing body.....")	/////
+	// log.Info(body)	//////
 
 
-	log.Info("Printing body with url and certs.....")	/////
-	log.WithFields(log.Fields{	///////
-		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
-	}).Info(body)
+	// log.Info("Printing body with url and certs.....")	/////
+	// log.WithFields(log.Fields{	///////
+	// 	"url":      c.baseURL,
+	// 	"caCertificates": c.credentials.Get("caCertificates"),
+	// }).Info(body)
 
 	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
 		jwtParts := strings.SplitN(body, ".", 3)
@@ -352,4 +352,31 @@ func (c *Client) authenticate() error {
 	} else {
 		return errors.New(body)
 	}
+}
+
+/////////// NEW
+type loggingResponseWriter struct {
+	http.ResponseWriter
+	statusCode int
+}
+
+func NewLoggingResponseWriter(w http.ResponseWriter) *loggingResponseWriter {
+	return &loggingResponseWriter{w, http.StatusOK}
+}
+
+func (lrw *loggingResponseWriter) WriteHeader(code int) {
+	lrw.statusCode = code
+	lrw.ResponseWriter.WriteHeader(code)
+}
+
+func wrapHandlerWithLogging(wrappedHandler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		log.Printf("--> %s %s", req.Method, req.URL.Path)
+
+		lrw := NewLoggingResponseWriter(w)
+		wrappedHandler.ServeHTTP(lrw, req)
+
+		statusCode := lrw.statusCode
+		log.Printf("<-- %d %s", statusCode, http.StatusText(statusCode))
+	})
 }
