@@ -54,11 +54,8 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 			"caCertificates": []string{caCertificates},
 		},
 	}
-	fmt.Print("Creating new client")
-	fmt.Println("Creating new client2")
-	fmt.Printf("print new client fmt = %v\n", c)
-	log.Printf("print new client log = %v\n", c)
-	fmt.Printf("Creating new client4")
+
+	log.Printf("print new client log = %v\n", c)	/////////
 	
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
@@ -200,6 +197,8 @@ func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*Sys
 }
 
 func (c *Client) request(path string, query url.Values, responseEntity interface{}) error {
+	log.Info("inside request function\n")	/////
+	
 	token, err := c.getToken()
 	if err != nil {
 		return errors.Trace(err)
@@ -223,16 +222,6 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 		return errors.Annotate(err, "NiFi API request failed")
 	}
 	defer resp.Body.Close()
-	// feedback := fmt.Sprintf(
-	// 	"Response body: %s: %s",
-	// 	resp.Body,
-	// 	string(messageBytes),
-	// )
-	fmt.Print("inside request function")
-	fmt.Println("inside request function2")
-	// fmt.Printf("hello = %v\n", feedback)
-	// log.Printf("halo = %v\n", feedback)
-	fmt.Printf("Creating new client4")
 
 	if resp.StatusCode == http.StatusOK {
 		if err := json.NewDecoder(resp.Body).Decode(responseEntity); err != nil {
@@ -281,7 +270,7 @@ func (c *Client) getToken() (string, error) {
 }
 
 func (c *Client) authenticate() error {
-	log.Info("inside client.go authenticate function")	//////
+	log.Info("inside client.go authenticate function\n")	//////
 	c.tokenMx.Lock()
 	defer c.tokenMx.Unlock()
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
@@ -300,38 +289,36 @@ func (c *Client) authenticate() error {
 	}
 	defer resp.Body.Close()
 
+	log.Info("Printing resp.....")	/////
 	log.Info(resp)	//////
+	log.Info("Printing respBody.....")	/////
 	log.Info(resp.Body)	//////
-	// log.Info(body)	//////
 
 
-	// log.WithField("url", reqURL).Info(resp)	///
-	// log.WithField("url", reqURL).Info(resp.Body)	///
-
+	log.Info("Printing resp with url and certs.....")	/////
 	log.WithFields(log.Fields{	///////
 		"url":      c.baseURL,
 		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Info(resp)
 
+	log.Info("Printing respBody with url and certs.....")	/////
 	log.WithFields(log.Fields{	///////
 		"url":      c.baseURL,
 		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Info(resp.Body)
 
-	// log.WithFields(log.Fields{	///////
-	// 	"url":      c.baseURL,
-	// 	"caCertificates": c.credentials.Get("caCertificates"),
-	// }).Info(body)
-	
+
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Annotate(err, "Couldn't read access token response from NiFi")
 	}
 	body := strings.TrimSpace(string(bodyBytes))
 
+	log.Info("Printing body.....")	/////
 	log.Info(body)	//////
-	// log.WithField("url", reqURL).Info(body)	///
 
+
+	log.Info("Printing body with url and certs.....")	/////
 	log.WithFields(log.Fields{	///////
 		"url":      c.baseURL,
 		"caCertificates": c.credentials.Get("caCertificates"),
