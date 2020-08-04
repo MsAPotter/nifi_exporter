@@ -300,6 +300,9 @@ func (c *Client) authenticate() error {
 	}
 	log.Print("Printing c.tokenExpirationTimestamp..... ")
 	log.Print(c.tokenExpirationTimestamp)
+	log.Print("Printing time.Now().Add(tokenExpirationMargin).Unix().... ")
+	log.Print(time.Now().Add(tokenExpirationMargin).Unix())
+
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
 		"caCertificates": c.credentials,
@@ -312,6 +315,9 @@ func (c *Client) authenticate() error {
 		return errors.Annotate(err, "Couldn't request access token from NiFi")
 	}
 	defer resp.Body.Close()
+
+	log.Print("Printing resp.StatusCode ..... ")
+	log.Print(resp.StatusCode)
 
 	// log.Info("Printing resp.....")	/////
 	// log.Info(resp)	//////
