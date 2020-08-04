@@ -374,7 +374,6 @@ func (c *Client) authenticate() error {
 
 /////////// NEW
 type loggingResponseWriter struct {
-	log.Info("Inside loggingResponseWriter function")
 	http.ResponseWriter
 	statusCode int
 }
