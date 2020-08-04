@@ -200,7 +200,7 @@ func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*Sys
 	log.Info("Inside client.go, in GetSystemDiagnostics FUNCTION")
 	query := url.Values{}
 	log.Info("Pringing url.Values......")
-	log.Info(url.Values{})
+	// log.Info(url.Values{})	--> cannot use url.Values literal (type url.Values) as type string in argument to logrus.Printf
 	log.Printf(url.Values{})
 
 	if nodewise {
