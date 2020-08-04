@@ -58,7 +58,7 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 	log.Printf("print new client c = %v\n", c)	/////////
 	log.Printf("print new client c.credentials = %v\n", c.credentials)	/////////
 	// log.Printf("print credentials = %v\n", url.Values)	/////////
-	log.Printf(url.Values)	/////////
+	// log.Printf(url.Values)	/////////
 	log.Print(url.Values)	/////////
 	
 	if caCertificates != "" {
