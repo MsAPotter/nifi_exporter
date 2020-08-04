@@ -11,6 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"log"
 
 	"crypto/tls"
 	"crypto/x509"
@@ -303,6 +304,11 @@ func (c *Client) authenticate() error {
 		"url":      c.baseURL,
 		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Infof("Printing client c %v: %s", c, c.baseURL)
+
+	logName := "my-log"
+        logger := client.Logger(logName).StandardLogger(logging.Info)
+	logger.Println(resp.Body)
+	logger.Println("logger.Println = %v\n", feedback)
 
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
