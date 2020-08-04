@@ -37,6 +37,7 @@ type Configuration struct {
 }
 
 func main() {
+	log.Info("Inside main.go, in main FUNCTION")
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s CONFIG_PATH", os.Args[0])
 		os.Exit(2)
@@ -57,6 +58,7 @@ func main() {
 }
 
 func loadConfig(configPath string) (*Configuration, error) {
+	log.Info("Inside main.go, in loadConfig FUNCTION")
 	log.WithField("path", configPath).Info("Loading configuration file...")
 
 	configYaml, err := ioutil.ReadFile(configPath)
@@ -100,8 +102,7 @@ func loadConfig(configPath string) (*Configuration, error) {
 }
 
 func start(config *Configuration) error {
-
-	log.Info("inside star function log.info")
+	log.Info("Inside main.go, in start FUNCTION")
 
 	for i := range config.Nodes {
 		node := &config.Nodes[i]
@@ -112,7 +113,7 @@ func start(config *Configuration) error {
 	log.Info(api)	///
 	log.Info("In main.go start function, printing node.CaCertificates.....")	///
 	log.Info(node.CaCertificates)	///
-	
+
 		if err != nil {
 			return errors.Annotate(err, "Couldn't create Prometheus API client")
 		}

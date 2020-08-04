@@ -48,6 +48,7 @@ type jwtPayload struct {
 }
 
 func NewClient(baseURL, caCertificates string) (*Client, error) {
+	log.Info("Inside client.go, in NewClient FUNCTION")
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		// credentials: caCertificates,
@@ -59,13 +60,13 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 		},
 	}
 
-	log.Printf("print new client c = %v\n", c)	/////////
+	// log.Printf("print new client c = %v\n", c)	/////////
 	log.Printf("print new client c.credentials = %v\n", c.credentials)	/////////
 	// log.Printf("print credentials = %v\n", url.Values)	/////////
 	// log.Printf(url.Values)	/////////
 	// log.Print(url.Values)	/////////
 
-	log.Info("Printing the caCertificates ==== "+ caCertificates)
+	// log.Info("Printing the caCertificates ==== "+ caCertificates)
 	
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
@@ -94,6 +95,7 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 }
 
 func (c *Client) GetCounters(nodewise bool, clusterNodeId string) (*CountersDTO, error) {
+	log.Info("Inside client.go, in GetCounters FUNCTION")
 	query := url.Values{}
 	if nodewise {
 		query.Add("nodewise", "1")
@@ -112,6 +114,7 @@ func (c *Client) GetCounters(nodewise bool, clusterNodeId string) (*CountersDTO,
 }
 
 func (c *Client) GetProcessGroup(id string) (*ProcessGroupEntity, error) {
+	log.Info("Inside client.go, in GetProcessGroup FUNCTION")
 	var entity ProcessGroupEntity
 	if err := c.request("/process-groups/"+id, nil, &entity); err != nil {
 		return nil, errors.Trace(err)
@@ -120,6 +123,7 @@ func (c *Client) GetProcessGroup(id string) (*ProcessGroupEntity, error) {
 }
 
 func (c *Client) GetProcessGroups(parentID string) ([]ProcessGroupEntity, error) {
+	log.Info("Inside client.go, in GetProcessGroups FUNCTION")
 	var entity ProcessGroupsEntity
 	if err := c.request("/process-groups/"+parentID+"/process-groups", nil, &entity); err != nil {
 		return nil, errors.Trace(err)
@@ -130,6 +134,7 @@ func (c *Client) GetProcessGroups(parentID string) ([]ProcessGroupEntity, error)
 // GetConnections traverses the process group hierarchy returning information about
 // all connections
 func (c *Client) GetConnections(parentID string) ([]ConnectionEntity, error) {
+	log.Info("Inside client.go, in GetConnections FUNCTION")
 	var entity ConnectionsEntity
 	if err := c.getDeepConnections(parentID, &entity); err != nil {
 		return nil, err
@@ -139,6 +144,7 @@ func (c *Client) GetConnections(parentID string) ([]ConnectionEntity, error) {
 }
 
 func (c *Client) getDeepConnections(parentID string, connectionsEntity *ConnectionsEntity) error {
+	log.Info("Inside client.go, in getDeepConnections FUNCTION")
 	var entity ConnectionsEntity
 
 	// Get the connections for the current process group
@@ -165,6 +171,7 @@ func (c *Client) getDeepConnections(parentID string, connectionsEntity *Connecti
 // GetDeepProcessGroups traverses the process group hierarchy returning information about
 // this and all child process groups
 func (c *Client) GetDeepProcessGroups(parentID string) ([]ProcessGroupEntity, error) {
+	log.Info("Inside client.go, in GetDeepProcessGroups FUNCTION")
 	var entity ProcessGroupsEntity
 	if err := c.getDeepProcessGroups(parentID, &entity); err != nil {
 		return nil, err
@@ -174,6 +181,7 @@ func (c *Client) GetDeepProcessGroups(parentID string) ([]ProcessGroupEntity, er
 }
 
 func (c *Client) getDeepProcessGroups(parentID string, groupsEntity *ProcessGroupsEntity) error {
+	log.Info("Inside client.go, in getDeepProcessGroups FUNCTION")
 	var entity ProcessGroupsEntity
 	if err := c.request("/process-groups/"+parentID+"/process-groups", nil, &entity); err != nil {
 		return errors.Trace(err)
@@ -189,6 +197,7 @@ func (c *Client) getDeepProcessGroups(parentID string, groupsEntity *ProcessGrou
 }
 
 func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*SystemDiagnosticsDTO, error) {
+	log.Info("Inside client.go, in GetSystemDiagnostics FUNCTION")
 	query := url.Values{}
 	if nodewise {
 		query.Add("nodewise", "1")
@@ -207,7 +216,7 @@ func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*Sys
 }
 
 func (c *Client) request(path string, query url.Values, responseEntity interface{}) error {
-	log.Info("inside request function\n")	/////
+	log.Info("Inside client.go, in request FUNCTION")
 	
 	token, err := c.getToken()
 	if err != nil {
@@ -273,7 +282,7 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 // }
 
 func (c *Client) getToken() (string, error) {
-	log.Info("Inside getToken function...")
+	log.Info("Inside client.go, in getToken FUNCTION")
 	if atomic.LoadInt64(&c.tokenExpirationTimestamp) < time.Now().Add(tokenExpirationMargin).Unix() {
 		c.authenticate()
 		log.Printf("print new client c.tokenExpirationTimestamp = %v\n", c.tokenExpirationTimestamp)	/////////
@@ -282,7 +291,7 @@ func (c *Client) getToken() (string, error) {
 }
 
 func (c *Client) authenticate() error {
-	log.Info("inside client.go authenticate function\n")	//////
+	log.Info("Inside client.go, in authenticate FUNCTION")
 	// c.tokenMx.Lock()
 	// defer c.tokenMx.Unlock()
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
