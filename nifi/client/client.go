@@ -289,7 +289,8 @@ func (c *Client) authenticate() error {
 		log.Info("Inside if stmt tokenExpirationTimestamp")
 		return nil
 	}
-	log.Print("Printing c.tokenExpirationTimestamp "+c.tokenExpirationTimestamp)
+	log.Print("Printing c.tokenExpirationTimestamp..... ")
+	log.Print(c.tokenExpirationTimestamp)
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
 		"caCertificates": c.credentials,
@@ -342,7 +343,8 @@ func (c *Client) authenticate() error {
 		log.Info("inside resp.StatusCode == http.StatusOK function....")	//////
 
 		jwtParts := strings.SplitN(body, ".", 3)
-		log.Printf("jwtParts ==== " +jwtParts) ////
+		log.Printf("jwtParts ==== ")
+		log.Printf(jwtParts) ////
 
 		if len(jwtParts) < 2 {
 			return errors.Annotate(err, "Invalid access token response from NiFi: Missing JWT payload")
