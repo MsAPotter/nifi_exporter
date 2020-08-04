@@ -199,6 +199,10 @@ func (c *Client) getDeepProcessGroups(parentID string, groupsEntity *ProcessGrou
 func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*SystemDiagnosticsDTO, error) {
 	log.Info("Inside client.go, in GetSystemDiagnostics FUNCTION")
 	query := url.Values{}
+	log.Info("Pringing url.Values......")
+	log.Info(url.Values{})
+	log.Printf(url.Values{})
+
 	if nodewise {
 		query.Add("nodewise", "1")
 	} else {
@@ -298,26 +302,36 @@ func (c *Client) authenticate() error {
 		log.Info("Inside if stmt tokenExpirationTimestamp")
 		return nil
 	}
-	log.Print("Printing c.tokenExpirationTimestamp..... ")
+	log.Info("Printing c.tokenExpirationTimestamp..... ")
 	log.Print(c.tokenExpirationTimestamp)
-	log.Print("Printing time.Now().Add(tokenExpirationMargin).Unix().... ")
+	log.Info("Printing time.Now().Add(tokenExpirationMargin).Unix().... ")
 	log.Print(time.Now().Add(tokenExpirationMargin).Unix())
+	
+	log.Info("Printing resp.StatusCode ..... ")
+	log.Print(resp.StatusCode)
 
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
 		"caCertificates": c.credentials,
 	}).Info("Authentication token has expired, reauthenticating...")
 
-
+	if urlError,ok :=  err.(*url.Error)  ; ok {
+		if urlError.Error() == "net/http: TLS handshake timeout" {
+			log.Info("Handshake failed.....")
+		}
+	}
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
+
+	log.Info("Printing resp.StatusCode ..... ")
+	log.Print(resp.StatusCode)
+
 	if err != nil {
 		return errors.Annotate(err, "Couldn't request access token from NiFi")
 	}
 	defer resp.Body.Close()
 
-	log.Print("Printing resp.StatusCode ..... ")
-	log.Print(resp.StatusCode)
+
 
 	// log.Info("Printing resp.....")	/////
 	// log.Info(resp)	//////
