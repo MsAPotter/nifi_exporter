@@ -35,7 +35,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build  -o /nifi_exporter
 
 EXPOSE 8000
 
-ENTRYPOINT ["/nifi_exporter/nifi/client/client.go"]
+ENTRYPOINT ["/nifi_exporter"]
 CMD ["/config/config.yml"]
 
 
