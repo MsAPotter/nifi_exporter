@@ -273,19 +273,23 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 // }
 
 func (c *Client) getToken() (string, error) {
+	log.Info("Inside getToken function...")
 	if atomic.LoadInt64(&c.tokenExpirationTimestamp) < time.Now().Add(tokenExpirationMargin).Unix() {
 		c.authenticate()
+		log.Printf("print new client c.tokenExpirationTimestamp = %v\n", c.tokenExpirationTimestamp)	/////////
 	}
 	return c.token, nil
 }
 
 func (c *Client) authenticate() error {
 	log.Info("inside client.go authenticate function\n")	//////
-	c.tokenMx.Lock()
-	defer c.tokenMx.Unlock()
+	// c.tokenMx.Lock()
+	// defer c.tokenMx.Unlock()
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
+		log.Info("Inside if stmt tokenExpirationTimestamp")
 		return nil
 	}
+	log.Print("Printing c.tokenExpirationTimestamp "+c.tokenExpirationTimestamp)
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
 		"caCertificates": c.credentials,
@@ -335,7 +339,11 @@ func (c *Client) authenticate() error {
 	// }).Info(body)
 
 	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
+		log.Info("inside resp.StatusCode == http.StatusOK function....")	//////
+
 		jwtParts := strings.SplitN(body, ".", 3)
+		log.Printf("jwtParts ==== " +jwtParts) ////
+
 		if len(jwtParts) < 2 {
 			return errors.Annotate(err, "Invalid access token response from NiFi: Missing JWT payload")
 		}
@@ -366,21 +374,27 @@ func (c *Client) authenticate() error {
 
 /////////// NEW
 type loggingResponseWriter struct {
+	log.Info("Inside loggingResponseWriter function")
 	http.ResponseWriter
 	statusCode int
 }
 
 func NewLoggingResponseWriter(w http.ResponseWriter) *loggingResponseWriter {
+	log.Info("Inside NewLoggingResponseWriter function")
 	return &loggingResponseWriter{w, http.StatusOK}
 }
 
 func (lrw *loggingResponseWriter) WriteHeader(code int) {
+	log.Info("Inside loggingResponseWriter function")
 	lrw.statusCode = code
+	log.Print(code)
 	lrw.ResponseWriter.WriteHeader(code)
 }
 
 func wrapHandlerWithLogging(wrappedHandler http.Handler) http.Handler {
+	log.Info("Inside wrapHandlerWithLogging function")
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		log.Info("Inside http.HandlerFunc function")
 		log.Printf("--> %s %s", req.Method, req.URL.Path)
 
 		lrw := NewLoggingResponseWriter(w)
