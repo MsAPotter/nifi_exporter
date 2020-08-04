@@ -52,7 +52,6 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
 			"caCertificates": []string{caCertificates},
-			"caCertificates": []string{CaCertificates},
 		},
 	}
 
