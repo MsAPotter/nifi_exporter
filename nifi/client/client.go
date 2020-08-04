@@ -223,11 +223,11 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 		return errors.Annotate(err, "NiFi API request failed")
 	}
 	defer resp.Body.Close()
-	feedback := fmt.Sprintf(
-		"Response body: %s: %s",
-		resp.Body,
-		string(messageBytes),
-	)
+	// feedback := fmt.Sprintf(
+	// 	"Response body: %s: %s",
+	// 	resp.Body,
+	// 	string(messageBytes),
+	// )
 	fmt.Print("inside request function")
 	fmt.Println("inside request function2")
 	fmt.Printf("hello = %v\n", feedback)
@@ -261,17 +261,17 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 
 
 
-func wrapHandlerWithLogging(wrappedHandler http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-        log.Printf("--> %s %s", req.Method, req.URL.Path)
+// func wrapHandlerWithLogging(wrappedHandler http.Handler) http.Handler {
+//     return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+//         log.Printf("--> %s %s", req.Method, req.URL.Path)
 
-        lrw := NewLoggingResponseWriter(w)
-        wrappedHandler.ServeHTTP(lrw, req)
+//         lrw := NewLoggingResponseWriter(w)
+//         wrappedHandler.ServeHTTP(lrw, req)
 
-        statusCode := lrw.statusCode
-        log.Printf("<-- %d %s", statusCode, http.StatusText(statusCode))
-    })
-}
+//         statusCode := lrw.statusCode
+//         log.Printf("<-- %d %s", statusCode, http.StatusText(statusCode))
+//     })
+// }
 
 func (c *Client) getToken() (string, error) {
 	if atomic.LoadInt64(&c.tokenExpirationTimestamp) < time.Now().Add(tokenExpirationMargin).Unix() {
@@ -302,11 +302,11 @@ func (c *Client) authenticate() error {
 
 	log.Info(resp)	//////
 	log.Info(resp.Body)	//////
-	log.Info(body)	//////
+	// log.Info(body)	//////
 
 
-	log.WithField("url", reqURL).Info(resp)	///
-	log.WithField("url", reqURL).Info(resp.Body)	///
+	// log.WithField("url", reqURL).Info(resp)	///
+	// log.WithField("url", reqURL).Info(resp.Body)	///
 
 	log.WithFields(log.Fields{	///////
 		"url":      c.baseURL,
@@ -318,10 +318,10 @@ func (c *Client) authenticate() error {
 		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Info(resp.Body)
 
-	log.WithFields(log.Fields{	///////
-		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
-	}).Info(body)
+	// log.WithFields(log.Fields{	///////
+	// 	"url":      c.baseURL,
+	// 	"caCertificates": c.credentials.Get("caCertificates"),
+	// }).Info(body)
 	
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
@@ -330,7 +330,7 @@ func (c *Client) authenticate() error {
 	body := strings.TrimSpace(string(bodyBytes))
 
 	log.Info(body)	//////
-	log.WithField("url", reqURL).Info(body)	///
+	// log.WithField("url", reqURL).Info(body)	///
 
 	log.WithFields(log.Fields{	///////
 		"url":      c.baseURL,
