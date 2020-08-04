@@ -99,8 +99,6 @@ func loadConfig(configPath string) (*Configuration, error) {
 
 func start(config *Configuration) error {
 
-	fmt.Print("inside star function fmt.print")
-	fmt.Println("inside star function fmt.println")
 	log.Info("inside star function log.info")
 
 	for i := range config.Nodes {

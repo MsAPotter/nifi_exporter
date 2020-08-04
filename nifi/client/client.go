@@ -291,24 +291,6 @@ func (c *Client) authenticate() error {
 		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Info("Authentication token has expired, reauthenticating...")
 
-	var feedback = resp.Body
-	fmt.Printf("fmt.printf = %v\n", feedback)
-	fmt.Println("fmt.println = %v\n", feedback)
-	log.Printf("log.printf = %v\n", feedback)
-	log.WithFields(log.Fields{
-		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
-	}).Infof("Printing reponse body %v: %s, %s", feedback, c.baseURL)
-
-	log.WithFields(log.Fields{
-		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
-	}).Infof("Printing client c %v: %s", c, c.baseURL)
-
-	logName := "my-log"
-        logger := client.Logger(logName).StandardLogger(logging.Info)
-	logger.Println(resp.Body)
-	logger.Println("logger.Println = %v\n", feedback)
 
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
@@ -316,12 +298,33 @@ func (c *Client) authenticate() error {
 		return errors.Annotate(err, "Couldn't request access token from NiFi")
 	}
 	defer resp.Body.Close()
+
+	log.WithFields(log.Fields{	///////
+		"url":      c.baseURL,
+		"caCertificates": c.credentials.Get("caCertificates"),
+	}).Info(resp)
+
+	log.WithFields(log.Fields{	///////
+		"url":      c.baseURL,
+		"caCertificates": c.credentials.Get("caCertificates"),
+	}).Info(resp.Body)
+
+	log.WithFields(log.Fields{	///////
+		"url":      c.baseURL,
+		"caCertificates": c.credentials.Get("caCertificates"),
+	}).Info(body)
 	
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Annotate(err, "Couldn't read access token response from NiFi")
 	}
 	body := strings.TrimSpace(string(bodyBytes))
+
+	log.WithFields(log.Fields{	///////
+		"url":      c.baseURL,
+		"caCertificates": c.credentials.Get("caCertificates"),
+	}).Info(body)
+
 	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusCreated {
 		jwtParts := strings.SplitN(body, ".", 3)
 		if len(jwtParts) < 2 {
