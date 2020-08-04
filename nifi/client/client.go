@@ -326,12 +326,6 @@ func (c *Client) authenticate() error {
 	} else if err != nil {
 		panic(err)
 	}
-	if e, ok := err.(*baseURL.Error); ok && e.Timeout() {
-		log.Info("Inside 2nd e ok catch.....")
-		log.Fatal("timeout is: ", e.Timeout())
-	} else if err != nil {
-		panic(err)
-	}
 
 	// if urlError,ok :=  err.(*url.Error)  ; ok {
 	// 	log.Info("Inside urlError if stmt.......")
