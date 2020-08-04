@@ -230,8 +230,8 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 	// )
 	fmt.Print("inside request function")
 	fmt.Println("inside request function2")
-	fmt.Printf("hello = %v\n", feedback)
-	log.Printf("halo = %v\n", feedback)
+	// fmt.Printf("hello = %v\n", feedback)
+	// log.Printf("halo = %v\n", feedback)
 	fmt.Printf("Creating new client4")
 
 	if resp.StatusCode == http.StatusOK {
