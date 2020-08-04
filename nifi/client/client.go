@@ -30,7 +30,7 @@ type Credentials struct {
 type Client struct {
 	baseURL     string
 	client      http.Client
-	credentials url.Values
+	credentials string
 
 	token                    string
 	tokenMx                  sync.Mutex
@@ -50,8 +50,7 @@ type jwtPayload struct {
 func NewClient(baseURL, caCertificates string) (*Client, error) {
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
-		credentials: url.Values{
-			"caCertificates": []string{caCertificates},
+		credentials: CaCertificates,
 		},
 	}
 
