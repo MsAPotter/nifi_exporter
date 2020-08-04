@@ -315,8 +315,9 @@ func (c *Client) authenticate() error {
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
 
-	log.Info("Printing resp.StatusCode ..... ")
-	log.Print(resp.StatusCode)
+	// log.Info("Printing resp.StatusCode ..... ")
+	// log.Print(resp.StatusCode)  --> panic: runtime error: invalid memory address or nil pointer dereference 
+	// 							--> [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x71cae3] 
 
 	if urlError,ok :=  err.(*url.Error)  ; ok {
 		if urlError.Error() == "net/http: TLS handshake timeout" {
