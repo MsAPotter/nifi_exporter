@@ -295,6 +295,11 @@ func (c *Client) getToken() (string, error) {
 	return c.token, nil
 }
 
+type QueryError struct {
+    Query string
+    Err   error
+}
+
 func (c *Client) authenticate() error {
 	log.Info("Inside client.go, in authenticate FUNCTION")
 	// c.tokenMx.Lock()
