@@ -199,10 +199,10 @@ func (c *Client) getDeepProcessGroups(parentID string, groupsEntity *ProcessGrou
 func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*SystemDiagnosticsDTO, error) {
 	log.Info("Inside client.go, in GetSystemDiagnostics FUNCTION")
 	query := url.Values{}
-	log.Info("Pringing url.Values......")
+	log.Info("Printing url.Values......")
 	// log.Info(url.Values{})	--> cannot use url.Values literal (type url.Values) as type string in argument to logrus.Printf
 	// log.Printf(url.Values{})  --> cannot use url.Values literal (type url.Values) as type string in argument to logrus.Printf
-	fmt.Printf("%v\n", query)
+	log.Printf("%v\n", query)
 
 	if nodewise {
 		query.Add("nodewise", "1")
@@ -314,12 +314,14 @@ func (c *Client) authenticate() error {
 	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
+	log.Printf("print resp.....s = %v\n", resp)	/////////
 
 	// log.Info("Printing resp.StatusCode ..... ")
 	// log.Print(resp.StatusCode)  --> panic: runtime error: invalid memory address or nil pointer dereference 
 	// 							--> [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x71cae3] 
 
 	if urlError,ok :=  err.(*url.Error)  ; ok {
+		log.Info("Inside urlError if stmt.......")
 		if urlError.Error() == "net/http: TLS handshake timeout" {
 			log.Info("Handshake failed.....")
 		}
