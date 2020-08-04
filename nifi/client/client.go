@@ -343,8 +343,6 @@ func (c *Client) authenticate() error {
 		log.Info("inside resp.StatusCode == http.StatusOK function....")	//////
 
 		jwtParts := strings.SplitN(body, ".", 3)
-		log.Printf("jwtParts ==== ")
-		log.Printf(jwtParts) ////
 
 		if len(jwtParts) < 2 {
 			return errors.Annotate(err, "Invalid access token response from NiFi: Missing JWT payload")
