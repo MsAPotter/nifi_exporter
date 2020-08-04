@@ -50,7 +50,7 @@ type jwtPayload struct {
 func NewClient(baseURL, caCertificates string) (*Client, error) {
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
-		credentials: CaCertificates,
+		credentials: {CaCertificates},
 		},
 	}
 
