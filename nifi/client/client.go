@@ -202,7 +202,7 @@ func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*Sys
 	log.Info("Pringing url.Values......")
 	// log.Info(url.Values{})	--> cannot use url.Values literal (type url.Values) as type string in argument to logrus.Printf
 	// log.Printf(url.Values{})  --> cannot use url.Values literal (type url.Values) as type string in argument to logrus.Printf
-	fmt.Printf("%+v\n", *query)
+	fmt.Printf("%v\n", query)
 
 	if nodewise {
 		query.Add("nodewise", "1")
