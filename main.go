@@ -13,6 +13,8 @@ import (
 	"github.com/juju/errors"
 //	"github.com/msiedlarek/nifi_exporter/nifi/client"
 //	"github.com/msiedlarek/nifi_exporter/nifi/collectors"
+	"github.com/Ms.APotter/nifi_exporter/nifi/client"
+	"github.com/Ms.APotter/nifi_exporter/nifi/collectors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
