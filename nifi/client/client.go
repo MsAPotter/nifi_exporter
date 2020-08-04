@@ -319,11 +319,16 @@ func (c *Client) authenticate() error {
 	// log.Info("Printing resp.StatusCode ..... ")
 	// log.Print(resp.StatusCode)  --> panic: runtime error: invalid memory address or nil pointer dereference 
 	// 							--> [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x71cae3] 
+	
+	if e, ok := err.(*QueryError); ok && e.Err == ErrPermission {
+		log.Info("query failed because of a permission problem")
+	}
 
 	if e, ok := err.(*url.Error); ok && e.Timeout() {
 		log.Info("Inside e ok catch.....")
 		log.Fatal("timeout is: ", e.Timeout())
 	} else if err != nil {
+		log.Info("About to throw a PANIC ERROR!!!!!!.....")
 		panic(err)
 	}
 
