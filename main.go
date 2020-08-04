@@ -107,8 +107,12 @@ func start(config *Configuration) error {
 		node := &config.Nodes[i]
 //		api, err := client.NewClient(node.URL, node.Username, node.Password, node.CaCertificates)
 		api, err := client.NewClient(node.URL, node.CaCertificates)
+
+	log.Info("In main.go start function, printing api.....")	///
 	log.Info(api)	///
+	log.Info("In main.go start function, printing node.CaCertificates.....")	///
 	log.Info(node.CaCertificates)	///
+	
 		if err != nil {
 			return errors.Annotate(err, "Couldn't create Prometheus API client")
 		}
