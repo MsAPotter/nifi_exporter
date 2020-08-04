@@ -207,6 +207,7 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 	}
 
 	reqURL := c.baseURL + path
+
 	log.WithField("url", reqURL).Info("Requesting api resource......")
 	if query != nil && len(query) > 0 {
 		reqURL += "?" + query.Encode()
@@ -281,6 +282,7 @@ func (c *Client) getToken() (string, error) {
 }
 
 func (c *Client) authenticate() error {
+	log.Info("inside client.go authenticate function")	//////
 	c.tokenMx.Lock()
 	defer c.tokenMx.Unlock()
 	if c.tokenExpirationTimestamp > time.Now().Add(tokenExpirationMargin).Unix() {
@@ -298,6 +300,14 @@ func (c *Client) authenticate() error {
 		return errors.Annotate(err, "Couldn't request access token from NiFi")
 	}
 	defer resp.Body.Close()
+
+	log.Info(resp)	//////
+	log.Info(resp.Body)	//////
+	log.Info(body)	//////
+
+
+	log.WithField("url", reqURL).Info(resp)	///
+	log.WithField("url", reqURL).Info(resp.Body)	///
 
 	log.WithFields(log.Fields{	///////
 		"url":      c.baseURL,
@@ -319,6 +329,9 @@ func (c *Client) authenticate() error {
 		return errors.Annotate(err, "Couldn't read access token response from NiFi")
 	}
 	body := strings.TrimSpace(string(bodyBytes))
+
+	log.Info(body)	//////
+	log.WithField("url", reqURL).Info(body)	///
 
 	log.WithFields(log.Fields{	///////
 		"url":      c.baseURL,
