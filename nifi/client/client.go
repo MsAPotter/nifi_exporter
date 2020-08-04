@@ -308,24 +308,21 @@ func (c *Client) authenticate() error {
 	log.Info("Printing time.Now().Add(tokenExpirationMargin).Unix().... ")
 	log.Print(time.Now().Add(tokenExpirationMargin).Unix())
 	
-	log.Info("Printing resp.StatusCode ..... ")
-	log.Print(resp.StatusCode)
-
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
 		"caCertificates": c.credentials,
 	}).Info("Authentication token has expired, reauthenticating...")
+
+	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
+
+	log.Info("Printing resp.StatusCode ..... ")
+	log.Print(resp.StatusCode)
 
 	if urlError,ok :=  err.(*url.Error)  ; ok {
 		if urlError.Error() == "net/http: TLS handshake timeout" {
 			log.Info("Handshake failed.....")
 		}
 	}
-
-	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
-
-	log.Info("Printing resp.StatusCode ..... ")
-	log.Print(resp.StatusCode)
 
 	if err != nil {
 		return errors.Annotate(err, "Couldn't request access token from NiFi")
