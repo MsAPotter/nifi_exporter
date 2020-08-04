@@ -57,7 +57,7 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 
 	log.Printf("print new client c = %v\n", c)	/////////
 	log.Printf("print new client c.credentials = %v\n", c.credentials)	/////////
-	log.Printf("print new client c.credentials.caCertificates = %v\n", c.credentials.caCertificates)	/////////
+	log.Printf("print credentials = %v\n", credentials)	/////////
 	
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
