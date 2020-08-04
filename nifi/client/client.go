@@ -202,7 +202,7 @@ func (c *Client) GetSystemDiagnostics(nodewise bool, clusterNodeId string) (*Sys
 	log.Info("Printing url.Values......")
 	// log.Info(url.Values{})	--> cannot use url.Values literal (type url.Values) as type string in argument to logrus.Printf
 	// log.Printf(url.Values{})  --> cannot use url.Values literal (type url.Values) as type string in argument to logrus.Printf
-	log.Printf("%v\n", query)
+	log.Printf("%v\n", query)	// --> "map[]\n"
 
 	if nodewise {
 		query.Add("nodewise", "1")
@@ -314,23 +314,37 @@ func (c *Client) authenticate() error {
 	}).Info("Authentication token has expired, reauthenticating...")
 
 	resp, err := c.client.PostForm(c.baseURL+"/access/token", c.credentials)
-	log.Printf("print resp.....s = %v\n", resp)	/////////
+	log.Printf("print resp..... = %v\n", resp)	///////// ==>>>>> <nil>
 
 	// log.Info("Printing resp.StatusCode ..... ")
 	// log.Print(resp.StatusCode)  --> panic: runtime error: invalid memory address or nil pointer dereference 
 	// 							--> [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x71cae3] 
 
-	if urlError,ok :=  err.(*url.Error)  ; ok {
-		log.Info("Inside urlError if stmt.......")
-		if urlError.Error() == "net/http: TLS handshake timeout" {
-			log.Info("Handshake failed.....")
-		}
+	if e, ok := err.(*url.Error); ok && e.Timeout() {
+		log.Info("Inside e ok catch.....")
+		log.Fatal("timeout is: ", e.Timeout())
+	} else if err != nil {
+		panic(err)
 	}
+	if e, ok := err.(*baseURL.Error); ok && e.Timeout() {
+		log.Info("Inside 2nd e ok catch.....")
+		log.Fatal("timeout is: ", e.Timeout())
+	} else if err != nil {
+		panic(err)
+	}
+
+	// if urlError,ok :=  err.(*url.Error)  ; ok {
+	// 	log.Info("Inside urlError if stmt.......")
+	// 	if urlError.Error() == "net/http: TLS handshake timeout" {
+	// 		log.Info("Handshake failed.....")
+	// 	}
+	// }
 
 	if err != nil {
 		return errors.Annotate(err, "Couldn't request access token from NiFi")
 	}
 	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)	////
 
 
 
