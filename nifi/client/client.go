@@ -367,21 +367,47 @@ func (c *Client) authenticate() error {
 	}
 }
 
+
+
+// https://github.com/msiedlarek/nifi_exporter/issues/11
+// func (c *ProcessGroupsCollector) collect(ch chan<- prometheus.Metric, entity *client.ProcessGroupEntity) {	
+// 	errorCount := map[string]int{}
+// 	for i := range entity.Bulletins {
+// 		errorCount[entity.Bulletins[i].Bulletin.Message]++
+// 	}
+
+// 	for message, count := range errorCount {
+// 		ch <- prometheus.MustNewConstMetric(
+// 			c.bulletin5mCount,
+// 			prometheus.GaugeValue,
+// 			float64(count),
+// 			entity.Component.Name,
+// 			message,
+// 			entity.Component.ID,
+// 		)
+// 	}
+// }
+
+// https://github.com/msiedlarek/nifi_exporter/issues/11
 func (c *ProcessGroupsCollector) collect(ch chan<- prometheus.Metric, entity *client.ProcessGroupEntity) {
-	
-	errorCount := map[string]int{}
+	bulletinCount := map[string]int{
+		"INFO":    0,
+		"WARNING": 0,
+		"ERROR":   0,
+	}
 	for i := range entity.Bulletins {
-		errorCount[entity.Bulletins[i].Bulletin.Message]++
+		bulletinCount[entity.Bulletins[i].Bulletin.Level]++
 	}
 
-	for message, count := range errorCount {
+	for level, count := range bulletinCount {
 		ch <- prometheus.MustNewConstMetric(
 			c.bulletin5mCount,
 			prometheus.GaugeValue,
 			float64(count),
 			entity.Component.Name,
-			message,
+			level,
 			entity.Component.ID,
+
 		)
 	}
 }
