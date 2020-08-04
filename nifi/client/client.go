@@ -11,7 +11,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-	"log"
 
 	"crypto/tls"
 	"crypto/x509"
