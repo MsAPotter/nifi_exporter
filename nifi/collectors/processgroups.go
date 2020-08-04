@@ -1,7 +1,8 @@
 package collectors
 
 import (
-	"github.com/msiedlarek/nifi_exporter/nifi/client"
+//	"github.com/msiedlarek/nifi_exporter/nifi/client"
+	"github.com/MsAPotter/nifi_exporter/nifi/client"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
