@@ -30,7 +30,7 @@ type Credentials struct {
 type Client struct {
 	baseURL     string
 	client      http.Client
-	credentials url.Values
+	credentials string
 
 	token                    string
 	tokenMx                  sync.Mutex
@@ -50,9 +50,10 @@ type jwtPayload struct {
 func NewClient(baseURL, caCertificates string) (*Client, error) {
 	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
-		credentials: url.Values{
-			"caCertificates": {caCertificates},
-		},
+		credentials: caCertificates,
+		// credentials: url.Values{
+		// 	"caCertificates": {caCertificates},
+		// },
 	}
 
 	log.Printf("print new client c = %v\n", c)	/////////
@@ -61,10 +62,7 @@ func NewClient(baseURL, caCertificates string) (*Client, error) {
 	// log.Printf(url.Values)	/////////
 	// log.Print(url.Values)	/////////
 
-	log.Info(caCertificates)
-	log.Print(caCertificates)
-	log.Println(caCertificates)
-	log.Printf(caCertificates)
+	log.Info("Printing the caCertificates ==== "+ caCertificates)
 	
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
@@ -287,7 +285,7 @@ func (c *Client) authenticate() error {
 	}
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates"),
+		"caCertificates": c.credentials,
 	}).Info("Authentication token has expired, reauthenticating...")
 
 
