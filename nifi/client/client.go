@@ -48,18 +48,17 @@ type jwtPayload struct {
 }
 
 func NewClient(baseURL, caCertificates string) (*Client, error) {
-	var c := Client{
+	c := Client{
 		baseURL: strings.TrimRight(baseURL, "/") + "/nifi-api",
 		credentials: url.Values{
-			"caCertificates": []string{caCertificates}
+			"caCertificates": []string{caCertificates},
 		},
 	}
 	fmt.Print("Creating new client")
 	fmt.Println("Creating new client2")
 	fmt.Printf("print new client fmt = %v\n", c)
 	log.Printf("print new client log = %v\n", c)
-	fmt.out.printf("Creating new client3")
-	fmt.printf("Creating new client4")
+	fmt.Printf("Creating new client4")
 	
 	if caCertificates != "" {
 		certPool := x509.NewCertPool()
@@ -232,8 +231,7 @@ func (c *Client) request(path string, query url.Values, responseEntity interface
 	fmt.Println("inside request function2")
 	fmt.Printf("hello = %v\n", feedback)
 	log.Printf("halo = %v\n", feedback)
-	fmt.out.printf("Creating new client3")
-	fmt.printf("Creating new client4")
+	fmt.Printf("Creating new client4")
 
 	if resp.StatusCode == http.StatusOK {
 		if err := json.NewDecoder(resp.Body).Decode(responseEntity); err != nil {
@@ -289,22 +287,21 @@ func (c *Client) authenticate() error {
 	}
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates")
+		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Info("Authentication token has expired, reauthenticating...")
 
-	var feedback := resp.Body
+	var feedback = resp.Body
 	fmt.Printf("fmt.printf = %v\n", feedback)
 	fmt.Println("fmt.println = %v\n", feedback)
 	log.Printf("log.printf = %v\n", feedback)
-	fmt.out.printf("fmt.out.printf = %v\n", feedback)
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates")
+		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Infof("Printing reponse body %v: %s, %s", feedback, c.baseURL)
 
 	log.WithFields(log.Fields{
 		"url":      c.baseURL,
-		"caCertificates": c.credentials.Get("caCertificates")
+		"caCertificates": c.credentials.Get("caCertificates"),
 	}).Infof("Printing client c %v: %s", c, c.baseURL)
 
 
@@ -338,7 +335,7 @@ func (c *Client) authenticate() error {
 
 		log.WithFields(log.Fields{
 			"url":             c.baseURL,
-			"caCertificates":        c.credentials.Get("caCertificates")
+			"caCertificates":        c.credentials.Get("caCertificates"),
 			"tokenExpiration": time.Unix(c.tokenExpirationTimestamp, 0).String(),
 		}).Info("Authentication successful.")
 		return nil
@@ -366,3 +363,4 @@ func (c *ProcessGroupsCollector) collect(ch chan<- prometheus.Metric, entity *cl
 			entity.Component.ID,
 		)
 	}
+}
